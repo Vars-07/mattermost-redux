@@ -370,12 +370,27 @@ export const getAllDirectChannels: (state: GlobalState) => Array<Channel> = crea
     getDirectChannelsSet,
     (state: GlobalState): UsersState => state.entities.users,
     getTeammateNameDisplaySetting,
-    (channels: IDMappedObjects<Channel>, channelSet: Set<string>, users: UsersState, teammateNameDisplay: string): Array<Channel> => {
+    (channels: IDMappedObjects<Channel>, channelSet: Array<string>, users: UsersState, teammateNameDisplay: string): Array<Channel> => {
         const dmChannels: Channel[] = [];
         channelSet.forEach((c) => {
             dmChannels.push(completeDirectChannelInfo(users, teammateNameDisplay, channels[c]));
         });
         return dmChannels;
+    },
+);
+
+export const getAllDirectChannelsNameMapInCurrentTeam: (state: GlobalState) => NameMappedObjects<Channel> = createSelector(
+    getAllChannels,
+    getDirectChannelsSet,
+    (state: GlobalState): UsersState => state.entities.users,
+    getTeammateNameDisplaySetting,
+    (channels: IDMappedObjects<Channel>, channelSet: Array<string>, users: UsersState, teammateNameDisplay: string): NameMappedObjects<Channel> => {
+        const channelMap: NameMappedObjects<Channel> = {};
+        channelSet.forEach((id) => {
+            const channel = channels[id];
+            channelMap[channel.name] = completeDirectChannelInfo(users, teammateNameDisplay, channel);
+        });
+        return channelMap;
     },
 );
 
